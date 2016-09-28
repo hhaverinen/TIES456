@@ -4,7 +4,10 @@ import ties456.data.Blog;
 import ties456.service.BlogService;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 /**
@@ -22,8 +25,26 @@ public class BlogResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Blog addBlog(Blog blog) {
-        return service.add(blog);
+    public Response addBlog(Blog blog, @Context UriInfo uriInfo) {
+        Blog newBlog = service.add(blog);
+    
+        String uri = uriInfo.getAbsolutePathBuilder()
+                .path(String.valueOf(newBlog.getId()))
+                .build().toString();
+        
+        newBlog.addLink(uri, "self");
+    
+        uri = uriInfo.getBaseUriBuilder()
+                .path(BlogResource.class)
+                .path(BlogResource.class, "getCommentResource")
+                .path(CommentResource.class)
+                .resolveTemplate("blogId", newBlog.getId())
+                .build().toString();
+        newBlog.addLink(uri, "comments");
+        
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(newBlog.getId())).build())
+                .entity(newBlog)
+                .build();
     }
     
     @GET
