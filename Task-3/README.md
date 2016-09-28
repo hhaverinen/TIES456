@@ -8,6 +8,7 @@ A simple RESTful API
 All data classes are extended from BaseData class.  
 BaseData holds all the basic information which everyother resource class should have.  
 Such as id, created, updated and HATEOAS links.  
+Data specific attributes should all have getters and setters set when implemented.
 
 ## Services
 Services which actually manage resources are extended for BaseService class.  
