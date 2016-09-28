@@ -1,13 +1,19 @@
 package ties456.data;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Tuomo Heino
  * @version 28/09/16.
  */
+@XmlRootElement
 public class Blog extends BaseData<Blog> {
-    private String title, blogText;
-    private Writer writer;
+    private String writer, title, blogText;
     
+    private Map<Long, Comment> commentMap = new HashMap<>();
     
     @Override
     public void updateData(Blog update) {
@@ -32,11 +38,16 @@ public class Blog extends BaseData<Blog> {
         this.blogText = blogText;
     }
     
-    public Writer getWriter() {
+    public String getWriter() {
         return writer;
     }
     
-    public void setWriter(Writer writer) {
+    public void setWriter(String writer) {
         this.writer = writer;
+    }
+    
+    @XmlTransient
+    public Map<Long, Comment> getComments() {
+        return commentMap;
     }
 }

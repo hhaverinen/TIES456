@@ -1,9 +1,8 @@
 package ties456;
 
 import ties456.resource.BlogResource;
-import ties456.resource.CommentResource;
+import ties456.resource.PodcastResource;
 import ties456.resource.TestResource;
-import ties456.resource.WriterResource;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -20,8 +19,7 @@ public class Ties456RestMain extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(TestResource.class);
         classes.add(BlogResource.class);
-        classes.add(WriterResource.class);
-        classes.add(CommentResource.class);
+        classes.add(PodcastResource.class);
         return classes;
     }
 }

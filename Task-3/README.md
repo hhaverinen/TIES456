@@ -23,7 +23,7 @@ Any new resource class should be added to Ties456RestMain class' classes HashSet
 Otherwise it won't get loaded when the server is started.
 
 # API Document
-## Blogs
+## Blogs - Upper Level Resource
 | Path          | Method | Parameters | Response | Failures | Description                |
 |---------------|--------|------------|----------|----------|----------------------------|
 |/blogs         | GET    | NONE       | 200      | NONE     | Gets all Blogs             |
@@ -32,27 +32,80 @@ Otherwise it won't get loaded when the server is started.
 |/blogs/{blogId}| DELETE | NONE       | 204      | 404      | Removes blog by id         |
 |/blogs/{blogId}| PUT    | NONE       | 200      | 404      | Updates blog by id         |
 
-## Comments
+## Comments - Nested Resource
 | Path                               | Method | Parameters | Response | Failures | Description                 |
 |------------------------------------|--------|------------|----------|----------|-----------------------------|
-|/comments                           | GET    | NONE       | 200      | NONE     | Gets all Comments           |
-|/comments/{commentId}               | GET    | NONE       | 200      | 404      | Gets Comment by id          |
 |/blogs/{blogId}/comments            | GET    | NONE       | 200      | NONE     | Gets Blogs Comments         |
 |/blogs/{blogId}/comments            | POST   | NONE       | 201      | 400      | Adds new Comment            |
 |/blogs/{blogId}/comments/{commentId}| GET    | NONE       | 200      | 404      | Gets Comment from blog by id|
+|/blogs/{blogId}/comments/{commentId}| DELETE | NONE       | 204      | 404      | Deletes comment from blog   |
+|/blogs/{blogId}/comments/{commentId}| PUT    | NONE       | 200      | 404      | Updates comment from blog   |
 
-## Writers/Users
-| Path                                  | Method | Parameters | Response | Failures | Description                           |
-|---------------------------------------|--------|------------|----------|----------|---------------------------------------|
-|/writers                               | GET    | NONE       | 200      | NONE     | Gets all Writers                      |
-|/writers                               | POST   | NONE       | 201      | 400      | Adds new writer                       |
-|/writers/{writerId}                    | GET    | NONE       | 200      | 404      | Gets Writer by id                     |
-|/writers/{writerId}                    | DELETE | NONE       | 204      | 404      | Deletes Writer by id                  |
-|/writers/{writerId}                    | PUT    | NONE       | 200      | 404      | Updates Writer by id                  |
-|/writers/{writerId}/blogs              | GET    | NONE       | 200      | NONE     | Gets all blogs by writer              |
-|/writers/{writerId}/blogs/{blogId}     | GET    | NONE       | 200      | NONE     | Gets all blog by writer and blog id   |
-|/writers/{writerId}/comments           | GET    | NONE       | 200      | NONE     | Gets all comments by writer           |
-|/writers/{writerId}/comments/{writerId}| GET    | NONE       | 200      | NONE     | Gets comment by writer and comment id |
+
+## Podcasts - Upper Level Resource
+| Path                | Method | Parameters | Response | Failures | Description       |
+|---------------------|--------|------------|----------|----------|-------------------|
+|/podcasts            |GET     |NONE        |200       |NONE      | Gets All Podcasts |
+|/podcasts            |POST    |NONE        |201       |400       | Adds Podcast      |
+|/podcasts/{podcastId}|GET     |NONE        |200       |NONE      | Get Podcast       |
+|/podcasts/{podcastId}|DELETE  |NONE        |204       |404       | Deletes Podcast   |
+|/podcasts/{podcastId}|PUT     |NONE        |200       |404       | Updates Podcast   |
+
+
+## Likes - Nested Resource
+| Path                               | Method | Parameters | Response | Failures | Description               |
+|------------------------------------|--------|------------|----------|----------|---------------------------|
+|/podcasts/{podcastId}/likes         |GET     |NONE        |200       |NONE      | Gets Podcasts Likes       |
+|/podcasts/{podcastId}/likes         |POST    |NONE        |201       |400       | Adds Like to Podcast      |
+|/podcasts/{podcastId}/likes/{likeId}|GET     |NONE        |200       |404       | Gets Podcasts Like        |
+|/podcasts/{podcastId}/likes/{likeId}|DELETE  |NONE        |204       |404       | Deletes Like from Podcast |
+|/podcasts/{podcastId}/likes/{likeId}|PUT     |NONE        |200       |404       | Updates Podcasts Like     |
+
+## Data Structures
+
+### BaseData
+|Name    |Type  |Include in POST|
+|--------|------|---------------|
+|id      |long  |NO             |
+|created |Date  |NO             |
+|updated |Date  |NO             |
+|links   |Array |NO             |
+
+### Blog
+Has all the BaseData attributes as well.  
+
+|Name    |Type  |Include in POST|
+|--------|------|---------------|
+|writer  |String|Required       |
+|title   |String|Required       |
+|blogText|String|Required       |
+
+### Comment
+Has all the BaseData attributes as well.  
+
+|Name    |Type  |Include in POST|
+|--------|------|---------------|
+|blogId  |long  |NO             |
+|user    |String|Required       |
+|comment |String|Required       |
+
+### Podcast
+Has all the BaseData attributes as well.  
+
+|Name      |Type  |Include in POST|
+|----------|------|---------------|
+|caster    |String|Required       |
+|title     |String|Required       |
+|podcastUrl|String|Required       |
+
+### Like
+Has all the BaseData attributes as well.  
+
+|Name     |Type  |Include in POST|
+|---------|------|---------------|
+|podcastId|long  |NO             |
+|user     |String|Required       |
+|score    |int   |Required       |
 
 # Running locally
 
