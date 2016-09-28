@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
  * @version 28/09/16.
  */
 public class TestDataService {
+    private static TestDataService instance;
+    public static TestDataService getInstance() {if(instance == null) instance = new TestDataService(); return instance;}
+    
+    private static long idGen = 3;
     private Map<Long, TestData> resMap;
     
     public TestDataService() {
@@ -29,8 +33,11 @@ public class TestDataService {
         test2.setGroup("TestiRyhmanen");
         test2.setUpdated(new Date());
         
-        resMap.put(1L, test1);
-        resMap.put(2L, test2);
+        resMap.put(test1.getId(), test1);
+        resMap.put(test2.getId(), test2);
+        
+        //If we ever implement saving/loading, this will take care of the id
+        resMap.values().stream().mapToLong(TestData::getId).max().ifPresent(max -> idGen = max + 1);
     }
     
     public List<TestData> getAllTestData() {
@@ -39,5 +46,25 @@ public class TestDataService {
     
     public TestData getTestDataById(long id) {
         return resMap.get(id);
+    }
+    
+    public void removeTestDataById(long id) {
+        resMap.remove(id);
+    }
+    
+    public TestData updateTestDataById(long id, TestData newData) {
+        TestData data = resMap.get(id);
+        if(data == null) return null;
+        data.setUpdated(newData.getUpdated());
+        data.setGroup(newData.getGroup());
+        data.setName(newData.getName());
+        return data;
+    }
+    
+    public TestData addTestData(TestData testData) {
+        testData.setId(idGen++);
+        resMap.put(testData.getId(), testData);
+        System.out.println("New Data: "+testData);
+        return testData;
     }
 }

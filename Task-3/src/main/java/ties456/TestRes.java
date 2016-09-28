@@ -3,10 +3,7 @@ package ties456;
 import ties456.data.TestData;
 import ties456.service.TestDataService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -16,19 +13,39 @@ import java.util.List;
  */
 @Path("/resources")
 public class TestRes {
-    TestDataService service = new TestDataService();
-    
+    TestDataService service = TestDataService.getInstance();
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TestData> getResources() {
+    public List<TestData> get() {
         return service.getAllTestData();
     }
     
     @GET
     @Path("/{testDataId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public TestData getTestData(@PathParam("testDataId") long id) {
+    public TestData get(@PathParam("testDataId") long id) {
         return service.getTestDataById(id);
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TestData add(TestData testData) {
+        return service.addTestData(testData);
+    }
+    
+    @DELETE
+    @Path("/{testDataId}")
+    public void delete(@PathParam("testDataId") long id) {
+        service.removeTestDataById(id);
+    }
+    
+    @PUT
+    @Path("/{testDataId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TestData update(@PathParam("testDataId") long id, TestData testData) {
+        return service.updateTestDataById(id, testData);
     }
 }

@@ -14,6 +14,16 @@ public class TestData {
     private Date updated;
     private String group;
     
+    @Override
+    public String toString() {
+        return "TestData{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", updated=" + updated +
+                ", group='" + group + '\'' +
+                '}';
+    }
+    
     public long getId() {
         return id;
     }
@@ -44,5 +54,21 @@ public class TestData {
     
     public void setGroup(String group) {
         this.group = group;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        
+        TestData testData = (TestData) o;
+    
+        return id == testData.id;
+    
+    }
+    
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }
