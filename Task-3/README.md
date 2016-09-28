@@ -22,6 +22,37 @@ All the actual RESTful implementations are implemented in Resource classes.
 Any new resource class should be added to Ties456RestMain class' classes HashSet.  
 Otherwise it won't get loaded when the server is started.
 
+# API Document
+## Blogs
+| Path          | Method | Parameters | Response | Failures | Description                |
+|---------------|--------|------------|----------|----------|----------------------------|
+|/blogs         | GET    | NONE       | 200      | NONE     | Gets all Blogs             |
+|/blogs         | POST   | NONE       | 201      | 400      | Adds Blog from Message Body|
+|/blogs/{blogId}| GET    | NONE       | 200      | NONE     | Gets blog by id            |
+|/blogs/{blogId}| DELETE | NONE       | 204      | 404      | Removes blog by id         |
+|/blogs/{blogId}| PUT    | NONE       | 200      | 404      | Updates blog by id         |
+
+## Comments
+| Path                               | Method | Parameters | Response | Failures | Description                 |
+|------------------------------------|--------|------------|----------|----------|-----------------------------|
+|/comments                           | GET    | NONE       | 200      | NONE     | Gets all Comments           |
+|/comments/{commentId}               | GET    | NONE       | 200      | 404      | Gets Comment by id          |
+|/blogs/{blogId}/comments            | GET    | NONE       | 200      | NONE     | Gets Blogs Comments         |
+|/blogs/{blogId}/comments            | POST   | NONE       | 201      | 400      | Adds new Comment            |
+|/blogs/{blogId}/comments/{commentId}| GET    | NONE       | 200      | 404      | Gets Comment from blog by id|
+
+## Writers/Users
+| Path                                  | Method | Parameters | Response | Failures | Description                           |
+|---------------------------------------|--------|------------|----------|----------|---------------------------------------|
+|/writers                               | GET    | NONE       | 200      | NONE     | Gets all Writers                      |
+|/writers                               | POST   | NONE       | 201      | 400      | Adds new writer                       |
+|/writers/{writerId}                    | GET    | NONE       | 200      | 404      | Gets Writer by id                     |
+|/writers/{writerId}                    | DELETE | NONE       | 204      | 404      | Deletes Writer by id                  |
+|/writers/{writerId}                    | PUT    | NONE       | 200      | 404      | Updates Writer by id                  |
+|/writers/{writerId}/blogs              | GET    | NONE       | 200      | NONE     | Gets all blogs by writer              |
+|/writers/{writerId}/blogs/{blogId}     | GET    | NONE       | 200      | NONE     | Gets all blog by writer and blog id   |
+|/writers/{writerId}/comments           | GET    | NONE       | 200      | NONE     | Gets all comments by writer           |
+|/writers/{writerId}/comments/{writerId}| GET    | NONE       | 200      | NONE     | Gets comment by writer and comment id |
 
 # Running locally
 

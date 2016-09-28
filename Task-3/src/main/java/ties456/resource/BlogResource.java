@@ -21,4 +21,6 @@ public class BlogResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Blog> get() {return service.getAll();}
     
+    
+    
 }
