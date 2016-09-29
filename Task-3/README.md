@@ -118,7 +118,7 @@ Has all the BaseData attributes as well.
 # Usage
 
 1. Use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) for testing
-2. Base URL is http://localhost:<tomcat_port>/
+2. Base URL is http://localhost:tomcat_port/
 
 # Examples for Data
 Use these for testing purposes
