@@ -1,5 +1,6 @@
 package ties456.data;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
  * @author Tuomo Heino
  * @version 28/09/16.
  */
+@XmlRootElement
 public class Podcast extends BaseData<Podcast> {
     private String caster, title, podcastUrl;
     

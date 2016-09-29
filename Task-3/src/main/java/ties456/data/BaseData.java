@@ -76,5 +76,6 @@ public abstract class BaseData<T extends BaseData> {
         public void setRel(String rel) {
             this.rel = rel;
         }
+
     }
 }
