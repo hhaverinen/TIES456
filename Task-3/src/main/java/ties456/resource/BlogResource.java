@@ -8,8 +8,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -29,19 +27,24 @@ public class BlogResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addBlog(Blog blog, @Context UriInfo uriInfo) {
         Blog newBlog = service.add(blog);
-        
-        String uri = uriInfo.getBaseUriBuilder().path(BlogResource.class)
-        			.path(Long.toString(blog.getId())).build().toString();
+    
+        String uri = uriInfo.getAbsolutePathBuilder()
+                .path(String.valueOf(newBlog.getId()))
+                .build().toString();
         
         newBlog.addLink(uri, "self");
-        
-        uri = uriInfo.getBaseUriBuilder().path(BlogResource.class).path(BlogResource.class, "getCommentResource")
-        		.path(CommentResource.class).resolveTemplate("blogId", blog.getId()).build().toString();
-        
+    
+        uri = uriInfo.getBaseUriBuilder()
+                .path(BlogResource.class)
+                .path(BlogResource.class, "getCommentResource")
+                .path(CommentResource.class)
+                .resolveTemplate("blogId", newBlog.getId())
+                .build().toString();
         newBlog.addLink(uri, "comments");
-        String newId = String.valueOf(newBlog.getId());
-        URI uri1 = uriInfo.getAbsolutePathBuilder().path(newId).build();
-        return Response.created(uri1).entity(newBlog).build();
+        
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(newBlog.getId())).build())
+                .entity(newBlog)
+                .build();
     }
     
     @GET

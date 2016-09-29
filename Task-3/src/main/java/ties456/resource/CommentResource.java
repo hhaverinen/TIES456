@@ -2,10 +2,12 @@ package ties456.resource;
 
 import ties456.data.Comment;
 import ties456.service.BlogService;
-import ties456.service.CommentService;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 /**
@@ -16,20 +18,45 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CommentResource {
-    CommentService commentService = CommentService.getInstance();
     BlogService blogService = BlogService.getInstance();
     
     @GET
-    public List<Comment> getComments(@PathParam("blogId") long blogId){return commentService.getCommentsByBlogId(blogId);}
+    public List<Comment> getComments(@PathParam("blogId") long blogId){return blogService.getCommentsByBlogId(blogId);}
     
     @POST
-    public Comment addComment(@PathParam("blogId") long blogId, Comment comment) {
-        return blogService.addCommentToBlog(blogId, comment);
+    public Response addComment(@PathParam("blogId") long blogId, Comment comment, @Context UriInfo uriInfo) {
+        Comment newComment = blogService.addCommentToBlog(blogId, comment);
+        String uri = uriInfo.getAbsolutePathBuilder()
+                .path(String.valueOf(newComment.getId()))
+                .build().toString();
+        newComment.addLink(uri, "self");
+        
+        uri = uriInfo.getBaseUriBuilder()
+                .path(BlogResource.class)
+                .path(String.valueOf(blogId))
+                .build().toString();
+        newComment.addLink(uri, "parent");
+        
+        return Response.created(uriInfo.getAbsolutePathBuilder().path(String.valueOf(newComment.getId())).build())
+                .entity(newComment)
+                .build();
     }
     
     @GET
     @Path("/{commentId}")
     public Comment getComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId) {
         return blogService.getComment(blogId, commentId);
+    }
+    
+    @DELETE
+    @Path("/{commentId}")
+    public void deleteComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId) {
+        blogService.removeComment(blogId, commentId);
+    }
+    
+    @PUT
+    @Path("/{commentId}")
+    public Comment updateComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId, Comment comment) {
+        return blogService.updateComment(blogId, commentId, comment);
     }
 }
