@@ -50,8 +50,9 @@ public class CommentResource {
     
     @DELETE
     @Path("/{commentId}")
-    public void deleteComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId) {
+    public Response deleteComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId) {
         blogService.removeComment(blogId, commentId);
+        return Response.noContent().build();
     }
     
     @PUT

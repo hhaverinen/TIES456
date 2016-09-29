@@ -56,8 +56,9 @@ public class BlogResource {
     
     @DELETE
     @Path("/{blogId}")
-    public void deleteBlog(@PathParam("blogId") long id) {
+    public Response deleteBlog(@PathParam("blogId") long id) {
         service.removeById(id);
+        return Response.noContent().build();
     }
     
     @PUT

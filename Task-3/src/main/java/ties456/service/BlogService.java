@@ -17,19 +17,32 @@ public class BlogService extends BaseService<Blog> {
     
     CommentService commentService = CommentService.getInstance();
     
+    @Override
+    public boolean removeById(long id) {
+        Blog blog = getById(id);
+        if(blog == null) return false;
+        boolean ret = super.removeById(id);
+        //Removes any comments attached to blog
+        blog.getComments().keySet().forEach(commentService::removeById);
+        return ret;
+    }
+    
+    /**
+     * Searches Blogs based on title
+     * @param titleSearchTerm string to search from titles
+     * @return list of blogs with title containing the string
+     */
     public List<Blog> searchWithTitle(String titleSearchTerm) {
         if(titleSearchTerm == null || titleSearchTerm.isEmpty()) return getAll();
         return search(blog -> blog.getTitle().contains(titleSearchTerm));
     }
     
-    @Override
-    public void removeById(long id) {
-        Blog blog = getById(id);
-        super.removeById(id);
-        //Removes any comments attached to blog
-        blog.getComments().keySet().forEach(commentService::removeById);
-    }
-    
+    /**
+     * Adds Comment given to Blog by blogs id
+     * @param blogId blogs id
+     * @param comment comment to add, no nulls!
+     * @return added comment or null if no blog is found
+     */
     public Comment addCommentToBlog(long blogId, Comment comment) {
         Blog blog = getById(blogId);
         if(blog == null) return null;
@@ -42,26 +55,53 @@ public class BlogService extends BaseService<Blog> {
         return realComment; 
     }
     
+    /**
+     * Gets Comment from Blog
+     * @param blogId blog id
+     * @param commentId comment id
+     * @return Comment or null if not found
+     */
     public Comment getComment(long blogId, long commentId) {
-        return getById(blogId).getComments().get(commentId);
-    }
-    
-    public void removeComment(long blogId, long commentId) {
         Blog blog = getById(blogId);
-        if(blog == null) return;
-        blog.getComments().remove(commentId);
-        commentService.removeById(commentId);
+        if(blog == null) return null;
+        return blog.getComments().get(commentId);
     }
     
+    /**
+     * Removes Comment from blog
+     * @param blogId blog id
+     * @param commentId comment id
+     * @return true if actually removed comment, otherwise false
+     */
+    public boolean removeComment(long blogId, long commentId) {
+        Blog blog = getById(blogId);
+        if(blog == null) return false;
+        blog.getComments().remove(commentId);
+        return commentService.removeById(commentId);
+    }
+    
+    /**
+     * Updates Comment with given Comment in given Blog
+     * @param blogId blog id 
+     * @param commentId comment id
+     * @param comment new comment
+     * @return Comment or null if Blog or Comment was not found
+     */
     public Comment updateComment(long blogId, long commentId, Comment comment) {
         Blog blog = getById(blogId);
         if(blog == null) return null;
         Comment updated = commentService.update(commentId, comment);
+        if(updated == null) return null;
         blog.getComments().remove(commentId);
         blog.getComments().put(updated.getId(), updated);
         return updated;
     }
     
+    /**
+     * Lists Blogs Comments
+     * @param blogId blog id
+     * @return List of Comments or null if not found
+     */
     public List<Comment> getCommentsByBlogId(long blogId) {
         Blog blog = getById(blogId);
         if(blog == null) return null;

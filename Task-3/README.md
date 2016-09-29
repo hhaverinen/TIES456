@@ -4,6 +4,8 @@ A simple RESTful API
 
 # Implementation
 
+[Http1.1 RFC for GET, POST, DELETE and PUT](https://tools.ietf.org/html/rfc7231#section-4.3)
+
 ## Data
 All data classes are extended from BaseData class.  
 BaseData holds all the basic information which everyother resource class should have.  
@@ -28,9 +30,9 @@ Otherwise it won't get loaded when the server is started.
 |---------------|--------|------------|----------|----------|----------------------------|
 |/blogs         | GET    | NONE       | 200      | NONE     | Gets all Blogs             |
 |/blogs         | POST   | NONE       | 201      | 400      | Adds Blog from Message Body|
-|/blogs/{blogId}| GET    | NONE       | 200      | NONE     | Gets blog by id            |
-|/blogs/{blogId}| DELETE | NONE       | 204      | 404      | Removes blog by id         |
-|/blogs/{blogId}| PUT    | NONE       | 200      | 404      | Updates blog by id         |
+|/blogs/{blogId}| GET    | NONE       | 200      | 404      | Gets blog by id            |
+|/blogs/{blogId}| DELETE | NONE       | 204      | NONE     | Removes blog by id         |
+|/blogs/{blogId}| PUT    | NONE       | 200      | 400      | Updates blog by id         |
 
 ## Comments - Nested Resource
 | Path                               | Method | Parameters | Response | Failures | Description                 |
@@ -38,8 +40,8 @@ Otherwise it won't get loaded when the server is started.
 |/blogs/{blogId}/comments            | GET    | NONE       | 200      | NONE     | Gets Blogs Comments         |
 |/blogs/{blogId}/comments            | POST   | NONE       | 201      | 400      | Adds new Comment            |
 |/blogs/{blogId}/comments/{commentId}| GET    | NONE       | 200      | 404      | Gets Comment from blog by id|
-|/blogs/{blogId}/comments/{commentId}| DELETE | NONE       | 204      | 404      | Deletes comment from blog   |
-|/blogs/{blogId}/comments/{commentId}| PUT    | NONE       | 200      | 404      | Updates comment from blog   |
+|/blogs/{blogId}/comments/{commentId}| DELETE | NONE       | 204      | NONE     | Deletes comment from blog   |
+|/blogs/{blogId}/comments/{commentId}| PUT    | NONE       | 200      | 400      | Updates comment from blog   |
 
 
 ## Podcasts - Upper Level Resource
@@ -49,7 +51,7 @@ Otherwise it won't get loaded when the server is started.
 |/podcasts            |POST    |NONE        |201       |400       | Adds Podcast      |
 |/podcasts/{podcastId}|GET     |NONE        |200       |NONE      | Get Podcast       |
 |/podcasts/{podcastId}|DELETE  |NONE        |204       |404       | Deletes Podcast   |
-|/podcasts/{podcastId}|PUT     |NONE        |200       |404       | Updates Podcast   |
+|/podcasts/{podcastId}|PUT     |NONE        |200       |400       | Updates Podcast   |
 
 
 ## Likes - Nested Resource
@@ -58,8 +60,8 @@ Otherwise it won't get loaded when the server is started.
 |/podcasts/{podcastId}/likes         |GET     |NONE        |200       |NONE      | Gets Podcasts Likes       |
 |/podcasts/{podcastId}/likes         |POST    |NONE        |201       |400       | Adds Like to Podcast      |
 |/podcasts/{podcastId}/likes/{likeId}|GET     |NONE        |200       |404       | Gets Podcasts Like        |
-|/podcasts/{podcastId}/likes/{likeId}|DELETE  |NONE        |204       |404       | Deletes Like from Podcast |
-|/podcasts/{podcastId}/likes/{likeId}|PUT     |NONE        |200       |404       | Updates Podcasts Like     |
+|/podcasts/{podcastId}/likes/{likeId}|DELETE  |NONE        |204       |NONE      | Deletes Like from Podcast |
+|/podcasts/{podcastId}/likes/{likeId}|PUT     |NONE        |200       |400       | Updates Podcasts Like     |
 
 ## Data Structures
 
@@ -116,5 +118,36 @@ Has all the BaseData attributes as well.
 # Usage
 
 1. Use [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop) for testing
-2. Base URL is http://localhost:<tomcat_port>/webapi
-3. To get TestResources use http://localhost:<tomcat_port>/webapi/resources
+2. Base URL is http://localhost:<tomcat_port>/
+
+# Examples for Data
+Use these for testing purposes
+
+## Blog
+POST /blogs
+
+```json
+{"writer":"John Smith", "title":"Fine Blog Update", "Lorem ipsun etc etc"}
+{"writer":"Marge Simpson", "title":"About Homer", "D'Oh"}
+```
+
+## Comment
+POST /blogs/{blogId}/comments
+```json
+{"user":"MightyCommenter23234", "comment":"First!"}
+{"user":"realDoge21", "comment":"Wow such blog"}
+```
+
+## Podcast
+POST /podcast
+```json
+{"caster":"Casper the Ghost", "tile":"Haunting", "podcastUrl":"http://localghost"}
+{"caster":"Podcasters", "tile":"Winter is Coming", "podcastUrl":"http://127.0.0.1"}
+```
+
+## Like
+POST /podcast/{likeId}/likes
+```json
+{"user":"timtim", "score":9000}
+{"user":"samuel98", "score":1}
+```

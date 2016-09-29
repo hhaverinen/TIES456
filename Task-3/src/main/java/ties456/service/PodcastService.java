@@ -17,13 +17,21 @@ public class PodcastService extends BaseService<Podcast> {
     LikeService likeService = LikeService.getInstance();
     
     @Override
-    public void removeById(long id) {
+    public boolean removeById(long id) {
         Podcast podcast = getById(id);
-        super.removeById(id);
+        if(podcast == null) return false;
+        boolean ret = super.removeById(id);
         //Removes any Likes attached to podcast
         podcast.getLikes().keySet().forEach(likeService::removeById);
+        return ret;
     }
     
+    /**
+     * Adds Like to Podcast
+     * @param podcastId podcast id
+     * @param like like, no nulls!
+     * @return Like or null if Podcast not found
+     */
     public Like addLikeToPodcast(long podcastId, Like like) {
         Podcast podcast = getById(podcastId);
         if(podcast == null) return null;
@@ -36,27 +44,53 @@ public class PodcastService extends BaseService<Podcast> {
         return realLike;
     }
     
+    /**
+     * Gets Like from Podcast
+     * @param podcastId podcast Id
+     * @param likeId like id
+     * @return Like or null if not found
+     */
     public Like getLike(long podcastId, long likeId) {
-        return getById(podcastId).getLikes().get(likeId);
-    }
-    
-    public void removeLike(long podcastId, long likeId) {
         Podcast podcast = getById(podcastId);
-        if(podcast == null) return;
-        podcast.getLikes().remove(likeId);
-        likeService.removeById(likeId);
+        if(podcast == null) return null;
+        return podcast.getLikes().get(likeId);
     }
     
+    /**
+     * Removes Like from Podcast
+     * @param podcastId podcast id
+     * @param likeId like id
+     * @return true if actually removed something, else false
+     */
+    public boolean removeLike(long podcastId, long likeId) {
+        Podcast podcast = getById(podcastId);
+        if(podcast == null) return false;
+        podcast.getLikes().remove(likeId);
+        return likeService.removeById(likeId);
+    }
+    
+    /**
+     * Updates Like
+     * @param podcastId podcast id
+     * @param likeId like id
+     * @param like like object
+     * @return Updated Like or null if not found
+     */
     public Like updateLike(long podcastId, long likeId, Like like) {
         Podcast podcast = getById(podcastId);
         if(podcast == null) return null;
         Like updated = likeService.update(likeId, like);
+        if(updated == null) return null;
         podcast.getLikes().remove(likeId);
         podcast.getLikes().put(updated.getId(), updated);
         return updated;
     }
     
-    
+    /**
+     * Gets Podcasts Likes
+     * @param podcastId podcast id
+     * @return List of Likes or null if not found
+     */
     public List<Like> getLikesByPodcastId(long podcastId) {
         Podcast podcast = getById(podcastId);
         if(podcast == null) return null;

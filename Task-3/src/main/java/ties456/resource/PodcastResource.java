@@ -58,8 +58,9 @@ public class PodcastResource {
     
     @DELETE
     @Path("/{podcastId}")
-    public void deletePodcast(@PathParam("podcastId") long podcastId) {
+    public Response deletePodcast(@PathParam("podcastId") long podcastId) {
         podcastService.removeById(podcastId);
+        return Response.noContent().build();
     }
     
     @PUT
@@ -115,8 +116,9 @@ public class PodcastResource {
     @DELETE
     @Path("/{podcastId}/likes/{likeId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void deleteLike(@PathParam("podcastId") long podcastId, @PathParam("likeId") long likeId) {
+    public Response deleteLike(@PathParam("podcastId") long podcastId, @PathParam("likeId") long likeId) {
         podcastService.removeLike(podcastId, likeId);
+        return Response.noContent().build();
     }
     
     @PUT
