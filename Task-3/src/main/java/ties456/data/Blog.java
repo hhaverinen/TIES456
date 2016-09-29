@@ -2,7 +2,10 @@ package ties456.data;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,9 +15,20 @@ import java.util.Map;
 @XmlRootElement
 public class Blog extends BaseData<Blog> {
     private String writer, title, blogText;
+    private List<Link> links = new ArrayList<>();
     
     private Map<Long, Comment> commentMap = new HashMap<>();
     
+    public Blog(){}
+    
+    public void addLink(String url, String rel)
+    {
+    	Link link = new Link();
+    	link.setHref(url);
+    	link.setRel(rel);
+    	links.add(link);
+    }
+  
     @Override
     public void updateData(Blog update) {
         this.title = update.title;
