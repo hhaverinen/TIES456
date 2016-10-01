@@ -22,7 +22,9 @@ public class BlogResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Blog> getBlogs() {return service.getAll();}
+    public List<Blog> getBlogs() {
+        return service.getAll();
+    }
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,13 +32,13 @@ public class BlogResource {
     public Response addBlog(Blog blog, @Context UriInfo uriInfo) {
         Blog newBlog = service.add(blog);
         if (newBlog == null) throw new InvalidEntryException("Could not add a new blog. Check your entry");
-    
+        
         String uri = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newBlog.getId()))
                 .build().toString();
         
         newBlog.addLink(uri, "self");
-    
+        
         uri = uriInfo.getBaseUriBuilder()
                 .path(BlogResource.class)
                 .path(BlogResource.class, "getCommentResource")
@@ -54,8 +56,9 @@ public class BlogResource {
     @Path("/{blogId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Blog getBlog(@PathParam("blogId") long id) {
-    	if(service.getById(id)==null) throw new DataNotFoundException("Blog (id "+id+") not found");
-        return service.getById(id);
+        Blog blog;
+        if ((blog = service.getById(id)) == null) throw new DataNotFoundException("Blog (id " + id + ") not found");
+        return blog;
     }
     
     @DELETE
@@ -68,9 +71,9 @@ public class BlogResource {
     @PUT
     @Path("/{blogId}")
     public Blog updateBlog(@PathParam("blogId") long id, Blog updatedBlog) {
-    	Blog b = service.update(id, updatedBlog);
-    	if(b==null) throw new InvalidEntryException("Could not update blog("+id+")");
-    	
+        Blog b = service.update(id, updatedBlog);
+        if (b == null) throw new InvalidEntryException("Could not update blog(" + id + ")");
+        
         return b;
     }
     
