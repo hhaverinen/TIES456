@@ -1,6 +1,8 @@
 package ties456.resource;
 
 import ties456.data.Blog;
+import ties456.errorhandling.InvalidEntryException;
+import ties456.errorhandling.DataNotFoundException;
 import ties456.service.BlogService;
 
 import javax.ws.rs.*;
@@ -27,6 +29,7 @@ public class BlogResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addBlog(Blog blog, @Context UriInfo uriInfo) {
         Blog newBlog = service.add(blog);
+        if (newBlog == null) throw new InvalidEntryException("Could not add a new blog. Check your entry");
     
         String uri = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newBlog.getId()))
@@ -51,6 +54,7 @@ public class BlogResource {
     @Path("/{blogId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Blog getBlog(@PathParam("blogId") long id) {
+    	if(service.getById(id)==null) throw new DataNotFoundException("Blog (id "+id+") not found");
         return service.getById(id);
     }
     
@@ -64,7 +68,10 @@ public class BlogResource {
     @PUT
     @Path("/{blogId}")
     public Blog updateBlog(@PathParam("blogId") long id, Blog updatedBlog) {
-        return service.update(id, updatedBlog);
+    	Blog b = service.update(id, updatedBlog);
+    	if(b==null) throw new InvalidEntryException("Could not update blog("+id+")");
+    	
+        return b;
     }
     
     @Path("/{blogId}/comments")

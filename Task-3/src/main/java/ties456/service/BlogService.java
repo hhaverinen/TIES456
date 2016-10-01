@@ -2,6 +2,7 @@ package ties456.service;
 
 import ties456.data.Blog;
 import ties456.data.Comment;
+import ties456.errorhandling.DataNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +64,7 @@ public class BlogService extends BaseService<Blog> {
      */
     public Comment getComment(long blogId, long commentId) {
         Blog blog = getById(blogId);
-        if(blog == null) return null;
+        if(blog == null) throw new DataNotFoundException("Comment with id "+commentId+" for blog id "+blogId+" not found");
         return blog.getComments().get(commentId);
     }
     
