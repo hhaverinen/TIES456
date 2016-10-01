@@ -1,6 +1,8 @@
 package ties456.resource;
 
 import ties456.data.Comment;
+import ties456.errorhandling.DataNotFoundException;
+import ties456.errorhandling.InvalidEntryException;
 import ties456.service.BlogService;
 
 import javax.ws.rs.*;
@@ -26,6 +28,8 @@ public class CommentResource {
     @POST
     public Response addComment(@PathParam("blogId") long blogId, Comment comment, @Context UriInfo uriInfo) {
         Comment newComment = blogService.addCommentToBlog(blogId, comment);
+        if(newComment == null) throw new InvalidEntryException("Could not add a new comment for blog (id"+blogId+")");
+        
         String uri = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newComment.getId()))
                 .build().toString();
@@ -45,7 +49,9 @@ public class CommentResource {
     @GET
     @Path("/{commentId}")
     public Comment getComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId) {
-        return blogService.getComment(blogId, commentId);
+        Comment c = blogService.getComment(blogId, commentId);
+        if(c==null) throw new DataNotFoundException("Comment (id "+commentId+") for blog (id "+blogId+") not found");
+    	return c;
     }
     
     @DELETE
@@ -58,6 +64,8 @@ public class CommentResource {
     @PUT
     @Path("/{commentId}")
     public Comment updateComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId, Comment comment) {
-        return blogService.updateComment(blogId, commentId, comment);
+        Comment c = blogService.updateComment(blogId, commentId, comment);
+    	if(c==null) throw new InvalidEntryException("Could not update the comment (id "+commentId+")");
+    	return c;
     }
 }

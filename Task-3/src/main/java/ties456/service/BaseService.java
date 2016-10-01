@@ -1,6 +1,7 @@
 package ties456.service;
 
 import ties456.data.BaseData;
+import ties456.errorhandling.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ public class BaseService<T extends BaseData> {
     
     /**
      * Gets Item
+     * Throws an exception if item not found
      * @param id item id
      * @return item or null if not found
      */
