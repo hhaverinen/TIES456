@@ -3,8 +3,6 @@ package ties456.service;
 import ties456.data.Blog;
 import ties456.data.Comment;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +22,7 @@ public class BlogService extends BaseService<Blog> {
         Blog blog = getById(id);
         if(blog == null) return false;
         boolean ret = super.removeById(id);
-        //Removes any comments attached to blog
+        //Removes any comments attached to blogn
         blog.getComments().keySet().forEach(commentService::removeById);
         return ret;
     }

@@ -1,7 +1,6 @@
 package ties456.service;
 
 import ties456.data.BaseData;
-import ties456.errorhandling.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -23,12 +22,16 @@ public class BaseService<T extends BaseData> {
     /**
      * @return Stream of Storages values
      */
-    protected Stream<T> stream() {return storage.values().stream();}
+    protected Stream<T> stream() {
+        return storage.values().stream();
+    }
     
     /**
      * @return parallelStream of Storage values
      */
-    protected Stream<T> parallelStream() {return storage.values().parallelStream();}
+    protected Stream<T> parallelStream() {
+        return storage.values().parallelStream();
+    }
     
     /**
      * @return Gets All Items, every call creates new List
@@ -40,6 +43,7 @@ public class BaseService<T extends BaseData> {
     /**
      * Gets Item
      * Throws an exception if item not found
+     *
      * @param id item id
      * @return item or null if not found
      */
@@ -49,6 +53,7 @@ public class BaseService<T extends BaseData> {
     
     /**
      * Removes item with given id
+     *
      * @param id id
      * @return true if actually removed something, else false
      */
@@ -58,6 +63,7 @@ public class BaseService<T extends BaseData> {
     
     /**
      * Adds given item to Storage
+     *
      * @param t item
      * @return newly added item
      */
@@ -71,13 +77,14 @@ public class BaseService<T extends BaseData> {
     
     /**
      * Updates given item
-     * @param id item id
+     *
+     * @param id     item id
      * @param update update to be made
      * @return updated item or null if not found
      */
     public T update(long id, T update) {
         T item = getById(id);
-        if(item == null) return null;
+        if (item == null) return null;
         item.updateData(update);
         item.setUpdated(new Date());
         return item;
@@ -92,20 +99,20 @@ public class BaseService<T extends BaseData> {
      * @return List
      */
     public List<T> getFrom(int start) {
-        if(start < 0) return getAll();
+        if (start < 0) return getAll();
         return stream().skip(start).collect(Collectors.toList());
     }
     
     /**
      * @param start index to start
-     * @param end index to stop
+     * @param end   index to stop
      * @return List
      */
     public List<T> getFromTo(int start, int end) {
-        if(start < 0 || end < 0) return getAll();
-        if(start-end < 0) return getAll();
+        if (start < 0 || end < 0) return getAll();
+        if (start - end < 0) return getAll();
         
-        return stream().skip(start).limit(end-start).collect(Collectors.toList());
+        return stream().skip(start).limit(end - start).collect(Collectors.toList());
     }
     
     public List<T> getUpdatedAfter(Date date) {
@@ -125,22 +132,22 @@ public class BaseService<T extends BaseData> {
     }
     
     public Stream<T> searchStream(Predicate<T> filter) {
-        if(filter == null) return parallelStream();
+        if (filter == null) return parallelStream();
         return parallelStream().filter(filter);
     }
     
     public List<T> search(Predicate<T> filter) {
-        if(filter == null) return getAll();
+        if (filter == null) return getAll();
         return parallelStream().filter(filter).collect(Collectors.toList());
     }
     
     public List<T> search(Predicate<T> filter, int start) {
-        if(filter == null || start < 0) return getAll();
+        if (filter == null || start < 0) return getAll();
         return parallelStream().filter(filter).skip(start).collect(Collectors.toList());
     }
     
     public List<T> search(Predicate<T> filter, int start, int end) {
-        if(filter == null || start < 0 || end < 0 || end-start < 0) return getAll();
-        return parallelStream().filter(filter).skip(start).limit(end-start).collect(Collectors.toList());
+        if (filter == null || start < 0 || end < 0 || end - start < 0) return getAll();
+        return parallelStream().filter(filter).skip(start).limit(end - start).collect(Collectors.toList());
     }
 }

@@ -23,12 +23,15 @@ public class CommentResource {
     BlogService blogService = BlogService.getInstance();
     
     @GET
-    public List<Comment> getComments(@PathParam("blogId") long blogId){return blogService.getCommentsByBlogId(blogId);}
+    public List<Comment> getComments(@PathParam("blogId") long blogId) {
+        return blogService.getCommentsByBlogId(blogId);
+    }
     
     @POST
     public Response addComment(@PathParam("blogId") long blogId, Comment comment, @Context UriInfo uriInfo) {
         Comment newComment = blogService.addCommentToBlog(blogId, comment);
-        if(newComment == null) throw new InvalidEntryException("Could not add a new comment for blog (id"+blogId+")");
+        if (newComment == null)
+            throw new InvalidEntryException("Could not add a new comment for blog (id" + blogId + ")");
         
         String uri = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newComment.getId()))
@@ -50,8 +53,9 @@ public class CommentResource {
     @Path("/{commentId}")
     public Comment getComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId) {
         Comment c = blogService.getComment(blogId, commentId);
-        if(c==null) throw new DataNotFoundException("Comment (id "+commentId+") for blog (id "+blogId+") not found");
-    	return c;
+        if (c == null)
+            throw new DataNotFoundException("Comment (id " + commentId + ") for blog (id " + blogId + ") not found");
+        return c;
     }
     
     @DELETE
@@ -65,7 +69,7 @@ public class CommentResource {
     @Path("/{commentId}")
     public Comment updateComment(@PathParam("blogId") long blogId, @PathParam("commentId") long commentId, Comment comment) {
         Comment c = blogService.updateComment(blogId, commentId, comment);
-    	if(c==null) throw new InvalidEntryException("Could not update the comment (id "+commentId+")");
-    	return c;
+        if (c == null) throw new InvalidEntryException("Could not update the comment (id " + commentId + ")");
+        return c;
     }
 }

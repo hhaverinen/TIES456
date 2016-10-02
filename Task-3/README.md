@@ -21,18 +21,16 @@ Any service specific methods can be implemented in those classes.
 
 ## Resources
 All the actual RESTful implementations are implemented in Resource classes.  
-Any new resource class should be added to Ties456RestMain class' classes HashSet.  
-Otherwise it won't get loaded when the server is started.
 
 # API Document
 ## Blogs - Upper Level Resource
-| Path          | Method | Parameters | Response | Failures | Description                |
-|---------------|--------|------------|----------|----------|----------------------------|
-|/blogs         | GET    | NONE       | 200      | NONE     | Gets all Blogs             |
-|/blogs         | POST   | NONE       | 201      | 400      | Adds Blog from Message Body|
-|/blogs/{blogId}| GET    | NONE       | 200      | 404      | Gets blog by id            |
-|/blogs/{blogId}| DELETE | NONE       | 204      | NONE     | Removes blog by id         |
-|/blogs/{blogId}| PUT    | NONE       | 200      | 400      | Updates blog by id         |
+| Path          | Method | Parameters    | Response | Failures | Description                |
+|---------------|--------|---------------|----------|----------|----------------------------|
+|/blogs         | GET    | writer, title | 200      | NONE     | Gets all Blogs, blogs can be queried either with writer or with title |
+|/blogs         | POST   | NONE          | 201      | 400      | Adds Blog from Message Body|
+|/blogs/{blogId}| GET    | NONE          | 200      | 404      | Gets blog by id            |
+|/blogs/{blogId}| DELETE | NONE          | 204      | NONE     | Removes blog by id         |
+|/blogs/{blogId}| PUT    | NONE          | 200      | 400      | Updates blog by id         |
 
 ## Comments - Nested Resource
 | Path                               | Method | Parameters | Response | Failures | Description                 |
@@ -47,7 +45,7 @@ Otherwise it won't get loaded when the server is started.
 ## Podcasts - Upper Level Resource
 | Path                | Method | Parameters | Response | Failures | Description       |
 |---------------------|--------|------------|----------|----------|-------------------|
-|/podcasts            |GET     |NONE        |200       |NONE      | Gets All Podcasts |
+|/podcasts            |GET     |caster      |200       |NONE      | Gets All Podcasts, can be queried with caster parameter for podcasts from wanted caster |
 |/podcasts            |POST    |NONE        |201       |400       | Adds Podcast      |
 |/podcasts/{podcastId}|GET     |NONE        |200       |NONE      | Get Podcast       |
 |/podcasts/{podcastId}|DELETE  |NONE        |204       |404       | Deletes Podcast   |
@@ -127,8 +125,8 @@ Use these for testing purposes
 POST /blogs
 
 ```json
-{"writer":"John Smith", "title":"Fine Blog Update", "Lorem ipsun etc etc"}
-{"writer":"Marge Simpson", "title":"About Homer", "D'Oh"}
+{"writer":"John Smith", "title":"Fine Blog Update", "blogText":"Lorem ipsun etc etc"}
+{"writer":"Marge Simpson", "title":"About Homer", "blogText":"D'Oh"}
 ```
 
 ## Comment

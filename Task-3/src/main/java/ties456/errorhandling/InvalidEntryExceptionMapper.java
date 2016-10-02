@@ -18,7 +18,7 @@ public class InvalidEntryExceptionMapper implements ExceptionMapper<InvalidEntry
 	@Override
 	public Response toResponse(InvalidEntryException ex) {
 		
-		ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(),400,"www???www");
+		ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(),400,"Entry not valid! Check your Entry!");
 		return Response.status(Status.BAD_REQUEST)
 				.entity(errorMessage)
 				.build();
