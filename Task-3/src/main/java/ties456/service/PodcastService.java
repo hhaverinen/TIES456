@@ -96,4 +96,17 @@ public class PodcastService extends BaseService<Podcast> {
         if(podcast == null) return null;
         return podcast.getLikes().values().stream().collect(Collectors.toList());
     }
+    
+    /**
+     * Lists Podcasts with requested writer
+     * @param caster casters 'name'
+     * @return List of podcasts with the caster or null
+     */
+	public List<Podcast> getAll(String caster) {
+		if(caster.isEmpty()) return getAll();
+        return search(blog -> blog.getCaster().equals(caster));		
+	}
+    
+    
+    
 }
