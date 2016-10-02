@@ -23,8 +23,9 @@ public class PodcastResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Podcast> getPodcasts() {
-        return podcastService.getAll();
+    public List<Podcast> getPodcasts(	@QueryParam("caster") String caster) {
+        if(caster!=null && caster!="") return podcastService.getAll(caster);
+    	return podcastService.getAll();
     }
     
     @POST

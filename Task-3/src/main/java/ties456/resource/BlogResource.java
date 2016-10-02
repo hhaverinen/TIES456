@@ -22,9 +22,12 @@ public class BlogResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Blog> getBlogs() {
-        return service.getAll();
-    }
+    public List<Blog> getBlogs(	@QueryParam("writer") String writer,
+    							@QueryParam("title") String title) {
+    	
+    	if(writer!=null) return service.getAll(writer);
+    	if(title!=null) return service.searchWithTitle(title);
+    	return service.getAll();}
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,13 +35,13 @@ public class BlogResource {
     public Response addBlog(Blog blog, @Context UriInfo uriInfo) {
         Blog newBlog = service.add(blog);
         if (newBlog == null) throw new InvalidEntryException("Could not add a new blog. Check your entry");
-        
+    
         String uri = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(newBlog.getId()))
                 .build().toString();
         
         newBlog.addLink(uri, "self");
-        
+    
         uri = uriInfo.getBaseUriBuilder()
                 .path(BlogResource.class)
                 .path(BlogResource.class, "getCommentResource")
