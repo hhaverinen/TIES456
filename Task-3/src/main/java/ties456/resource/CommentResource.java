@@ -28,6 +28,7 @@ public class CommentResource {
     }
     
     @POST
+    
     public Response addComment(@PathParam("blogId") long blogId, Comment comment, @Context UriInfo uriInfo) {
         Comment newComment = blogService.addCommentToBlog(blogId, comment);
         if (newComment == null)

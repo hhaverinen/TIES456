@@ -74,6 +74,8 @@ public class BlogResource {
     
     @PUT
     @Path("/{blogId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Blog updateBlog(@PathParam("blogId") long id, Blog updatedBlog) {
         Blog b = service.update(id, updatedBlog);
         if (b == null) throw new InvalidEntryException("Could not update blog(" + id + ")");
