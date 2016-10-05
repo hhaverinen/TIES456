@@ -1,5 +1,8 @@
 package ties456.service;
 
+import ties456.data.User;
+
+import javax.xml.bind.annotation.XmlEnum;
 import java.util.*;
 
 /**
@@ -78,11 +81,11 @@ public class SecureUserService {
         return new Date().before(oAuth.expires);
     }
     
-    
+    @XmlEnum
     public enum Permission {
         QUEST,
         USER,
-        ADMIN;
+        ADMIN
     }
     
     public static class OAuth {
@@ -107,5 +110,23 @@ public class SecureUserService {
         public Permission getAccessPermission() {
             return accessPermission;
         }
+    }
+
+    /**
+     * Creates a new user
+     * @param user user
+     * @return returns user object if user creation was successful, returns null otherwise
+     */
+    public User addUser(User user) {
+        if (user.getUsername() == null || user.getUsername().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty())
+            return null;
+
+        if (userPasswordDB.get(user.getUsername()) != null)
+            return null;
+
+        userPasswordDB.put(user.getUsername(), user.getPassword());
+        if (user.getPermission() != null) userPermission.put(user.getUsername(), user.getPermission());
+
+        return user;
     }
 }

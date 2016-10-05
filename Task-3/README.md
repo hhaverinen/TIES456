@@ -149,3 +149,8 @@ POST /podcast/{likeId}/likes
 {"user":"timtim", "score":9000}
 {"user":"samuel98", "score":1}
 ```
+
+## User
+POST /users
+{"username":"kilpikonna","password":"kilppari"}
+{"username":"kissakala","password":"passw0rd", "permission":"ADMIN"}
