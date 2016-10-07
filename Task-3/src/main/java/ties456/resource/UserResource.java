@@ -3,6 +3,7 @@ package ties456.resource;
 import ties456.data.User;
 import ties456.errorhandling.InvalidEntryException;
 import ties456.service.SecureUserService;
+import ties456.service.SecureUserService.Permission;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -19,11 +20,17 @@ import javax.ws.rs.core.UriInfo;
 public class UserResource {
 
     SecureUserService secureUserService = SecureUserService.getInstance();
+    
+    User käyttäjä = null; //Tähän tulee sillä hetkellä kirjautuneena oleva käyttäjä
 
-    @POST
+	@POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addUser(User user, @Context UriInfo uriInfo) {
+    public Response addUser(User user, @Context UriInfo uriInfo)
+    {
+    	if(secureUserService.getUserPermission(käyttäjä.getUsername()) != Permission.ADMIN)
+    		throw new WebApplicationException("Not authorized", 401); 
+    	
         User newUser = secureUserService.addUser(user);
         if (newUser == null) throw new InvalidEntryException("Could not add a new user. Check your entry");
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).entity(newUser).build();
