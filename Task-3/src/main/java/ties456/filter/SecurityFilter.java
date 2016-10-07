@@ -22,6 +22,8 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
     private static final String AUTH_HEADER = "Authorization";
     private static final String AUTH_BASIC_PREFIX = "Basic ";
     
+    public static String user;
+    
     SecureUserService security = SecureUserService.getInstance();
     
     @Override
@@ -78,6 +80,9 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
         String username = authCreds.substring(0, index);
         String password = authCreds.substring(index + 1);
         
+        
+        if(method.equals(HttpMethod.POST)) user = username;
+        
         if (!security.isUserAuth(username, password)) {
             System.out.println("Not Authorized: "+authCreds);
             notOk(crc, "Wrong Password!");
@@ -85,6 +90,7 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
         }
         
         SecureUserService.Permission userPermission = security.getUserPermission(username);
+        
         if(userPermission == SecureUserService.Permission.QUEST) {
             notOk(crc, "Permission Denied!");
             System.out.println("User Permission Denied: "+username+" : "+userPermission);
