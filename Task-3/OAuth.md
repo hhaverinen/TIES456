@@ -8,7 +8,7 @@ username and password implementing only the Resource Owner Password Credentials 
 ## Getting Access Token
 User can request access token from server with POST Method described below   
 
-POST /token HTTP/1.1  
+POST /users/authorize HTTP/1.1
 HOST: http://localhost/  
 Authorization: Basic sadf4tASfu9k435D9asdF  
 Content-Type: application/x-www-form-urlencoded
