@@ -154,3 +154,8 @@ POST /podcast/{likeId}/likes
 POST /users
 {"username":"kilpikonna","password":"kilppari"}
 {"username":"kissakala","password":"passw0rd", "permission":"ADMIN"}
+
+## OAuth authorization
+POST /users/authorize
+Content Type: application/x-www-form-urlencoded
+Content: grant_type=password&username=koira&password=00000
