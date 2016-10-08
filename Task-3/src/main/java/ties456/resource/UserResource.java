@@ -28,4 +28,26 @@ public class UserResource {
         if (newUser == null) throw new InvalidEntryException("Could not add a new user. Check your entry");
         return Response.created(uriInfo.getAbsolutePathBuilder().build()).entity(newUser).build();
     }
+
+    @POST
+    @Path("/authorize")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response authorize(@FormParam("grant_type") String grant_type, @FormParam("username") String username, @FormParam("password") String password)  {
+        if (!grant_type.equals("password")) throw new BadRequestException("Wrong grant type!"); // TODO: JSON response
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) throw new BadRequestException("Bad request!");
+
+        SecureUserService.OAuth oauth = secureUserService.requestAccessToken(username);
+
+        return Response.ok(buildAthorizationResponse(oauth)).build();
+    }
+
+    //TODO: Use something more sophisticated
+    private String buildAthorizationResponse(SecureUserService.OAuth oAuth) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\"access_token\":\"" + oAuth.getAccessToken() + "\",");
+        sb.append("\"token_type\":\"password\",");
+        sb.append("\"expries_in\":\"10800\"}");
+        return sb.toString();
+    }
 }

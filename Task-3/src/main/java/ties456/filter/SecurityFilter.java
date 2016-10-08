@@ -21,6 +21,7 @@ import java.util.Base64;
 public class SecurityFilter implements ContainerRequestFilter, ContainerResponseFilter {
     private static final String AUTH_HEADER = "Authorization";
     private static final String AUTH_BASIC_PREFIX = "Basic ";
+    private static final String OAUTH_BEARER_PREFIX = "Bearer ";
     
     SecureUserService security = SecureUserService.getInstance();
     
@@ -38,6 +39,9 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
             if(auth.startsWith(AUTH_BASIC_PREFIX)) {
                 if(basicAuth(crc, auth.replace(AUTH_BASIC_PREFIX , "")))
                     return;
+            } else if (auth.startsWith(OAUTH_BEARER_PREFIX)) {
+                if (oAuth(crc, auth.replace(OAUTH_BEARER_PREFIX, "")))
+                    return;
             } else {
                 System.out.println("No Authentication method found for: "+auth);
                 notOk(crc, "Unsupported Authentication Method!");
@@ -52,7 +56,30 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
         
     }
-    
+
+    /**
+     * OAuth implementation
+     * @param crc Context
+     * @param auth authentication token
+     * @return was authentication denied
+     */
+    private boolean oAuth(ContainerRequestContext crc, String auth) {
+        String method = crc.getMethod();
+        System.out.println("Auth token: " + auth);
+
+        if ((method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)) && !security.isAuthorized(auth, SecureUserService.Permission.USER)) {
+            notOk(crc, "No permission with token: " + auth);
+            return true;
+        }
+        if (method.equals(HttpMethod.DELETE) && !security.isAuthorized(auth, SecureUserService.Permission.ADMIN)) {
+            notOk(crc, "No permission with token: " + auth);
+            return true;
+        }
+
+        return false;
+
+    }
+
     
     /**
      * Basic Authentication Implementation
