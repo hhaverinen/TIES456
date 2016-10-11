@@ -199,7 +199,7 @@ public class SecureUserService {
     }
     
     private static String encode64(String str) {
-        return new String(Base64.getEncoder().encode(str.getBytes()));
+        return new String(Base64.getEncoder().withoutPadding().encode(str.getBytes()));
     }
     
     private static long getExpirationMin(int minutes) {
