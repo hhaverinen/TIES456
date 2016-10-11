@@ -42,7 +42,7 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
                 if(basicAuth(crc, auth.replace(AUTH_BASIC_PREFIX , "")))
                     return;
             } else if (auth.startsWith(OAUTH_BEARER_PREFIX)) {
-                if (oAuth(crc, auth.replace(OAUTH_BEARER_PREFIX, "")))
+                if (jwt(crc, auth.replace(OAUTH_BEARER_PREFIX, "")))
                     return;
             } else {
                 System.out.println("No Authentication method found for: "+auth);
@@ -57,6 +57,27 @@ public class SecurityFilter implements ContainerRequestFilter, ContainerResponse
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
         
+    }
+    
+    private boolean jwt(ContainerRequestContext crc, String jwtTokenStr) {
+        SecureUserService.JwtToken jwtToken = SecureUserService.getInstance().decryptJwtToken(jwtTokenStr);
+        if(jwtToken == null) {
+            notOk(crc, "Invalid JWT Token: " + jwtTokenStr);
+            return true;
+        }
+        SecureUserService.Permission permission = jwtToken.getPayload().getPermission();
+        String method = crc.getMethod();
+        switch (method) {
+            case HttpMethod.DELETE:
+                return permission == SecureUserService.Permission.ADMIN;
+            
+            case HttpMethod.POST:
+            case HttpMethod.PUT:
+                return permission == SecureUserService.Permission.ADMIN || permission == SecureUserService.Permission.USER;
+            
+            default:
+                return true;
+        }
     }
 
     /**
