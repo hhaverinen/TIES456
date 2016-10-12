@@ -111,3 +111,5 @@ out
 
 # include these jars so we don't need to start looking for them over the internet ;)
 !Task-2.1/CurrencyRateServlet/lib/*.jar
+!Task-2.1/CurrencyRateServlet/*.jar
+!Task-2.1/CurrencyRateService/*.jar
