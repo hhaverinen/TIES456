@@ -11,6 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Base64;
 
 
 /**
@@ -47,6 +48,26 @@ public class UserResource {
 
         return Response.ok(buildAthorizationResponse(oauth)).build();
     }
+    
+    @GET
+    @Path("/token")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response token(@HeaderParam("Authorization") String userPassword) {
+        if(userPassword == null || userPassword.isEmpty()) throw new BadRequestException("Invalid Credentials!");
+        if(!userPassword.startsWith("Basic ")) throw new BadRequestException("Invalid Credentials!");
+        userPassword = userPassword.replace("Basic ", "");
+        String usrpss = new String(Base64.getDecoder().decode(userPassword));
+        String[] parts = usrpss.split(":");
+        if(parts.length != 2) throw new BadRequestException("Please Provide Valid User Credentials!");
+        if(!SecureUserService.getInstance().isUserAuth(parts[0], parts[1])) throw new BadRequestException("Bad Credentials!");
+        
+        //parts[0] is the user
+        SecureUserService.JwtToken token = SecureUserService.getInstance().createJwtToken(parts[0]);
+        
+        return Response.ok(token.toTokenString()).build();
+    }
+    
+    
 
     //TODO: Use something more sophisticated
     private String buildAthorizationResponse(SecureUserService.OAuth oAuth) {
